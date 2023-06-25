@@ -19,9 +19,9 @@ const http = require("http").createServer(app); // Create HTTP server
 const io = new Server(http);
 
 // Middlewares
+app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(cors());
 
 // Routes
 app.use("/api/v1/user", require("./routes/userRoutes"));
@@ -29,16 +29,15 @@ app.use("/api/v1/admin", require("./routes/adminRoutes"));
 app.use("/api/v1/doctor", require("./routes/doctorRoutes"));
 app.use("/api/v1/chat", require("./routes/chatRoutes"));
 
-app.options(
-  "https://doctoro-production.onrender.com",
-  function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "POST");
-    res.header("Access-Control-Allow-Headers", "accept, content-type");
-    res.header("Access-Control-Max-Age", "1728000");
-    return res.sendStatus(200);
-  }
-);
+app.use((req, res, next) => {
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://doctoro-production.onrender.com"
+  );
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
 
 app.use(express.static(path.join(__dirname, "/client/build")));
 
