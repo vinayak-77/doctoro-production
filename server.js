@@ -19,35 +19,15 @@ const http = require("http").createServer(app); // Create HTTP server
 const io = new Server(http);
 
 // Middlewares
-app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(cors());
 
 // Routes
 app.use("/api/v1/user", require("./routes/userRoutes"));
 app.use("/api/v1/admin", require("./routes/adminRoutes"));
 app.use("/api/v1/doctor", require("./routes/doctorRoutes"));
 app.use("/api/v1/chat", require("./routes/chatRoutes"));
-
-app.use(
-  cors({
-    allowedHeaders: [
-      "sessionId",
-      "Content-Type",
-      "Authorization",
-      "authorization",
-    ],
-    exposedHeaders: ["sessionId"],
-    origin: [
-      "https://doctoro-production.onrender.com",
-      "https://www.doctoro-production.onrender.com",
-    ],
-    // 'origin': 'http://localhost:8080',
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: false,
-    preflightContinue: false,
-  })
-);
 
 app.use(express.static(path.join(__dirname, "/client/build")));
 
