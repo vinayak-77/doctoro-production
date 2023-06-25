@@ -29,6 +29,17 @@ app.use("/api/v1/admin", require("./routes/adminRoutes"));
 app.use("/api/v1/doctor", require("./routes/doctorRoutes"));
 app.use("/api/v1/chat", require("./routes/chatRoutes"));
 
+app.options(
+  "https://doctoro-production.onrender.com",
+  function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "POST");
+    res.header("Access-Control-Allow-Headers", "accept, content-type");
+    res.header("Access-Control-Max-Age", "1728000");
+    return res.sendStatus(200);
+  }
+);
+
 app.use(express.static(path.join(__dirname, "/client/build")));
 
 app.get("*", function (req, res) {
@@ -43,6 +54,8 @@ io.on("connection", (socket) => {
   let roomID;
   // Join room
   socket.on("joinRoom", ({ username, roomID }) => {
+    console.log(`USER JOINED ${roomID}`);
+
     roomID = roomID;
     socket.join(roomID);
     socket.username = username;
@@ -50,6 +63,7 @@ io.on("connection", (socket) => {
 
   // Handle incoming messages
   socket.on("sendMessage", (messageData) => {
+    console.log(messageData);
     socket.to(messageData.roomID).emit("receiveMessage", messageData);
   });
 
