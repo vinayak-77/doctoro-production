@@ -29,15 +29,25 @@ app.use("/api/v1/admin", require("./routes/adminRoutes"));
 app.use("/api/v1/doctor", require("./routes/doctorRoutes"));
 app.use("/api/v1/chat", require("./routes/chatRoutes"));
 
-app.use((req, res, next) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    "https://doctoro-production.onrender.com"
-  );
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
+app.use(
+  cors({
+    allowedHeaders: [
+      "sessionId",
+      "Content-Type",
+      "Authorization",
+      "authorization",
+    ],
+    exposedHeaders: ["sessionId"],
+    origin: [
+      "https://doctoro-production.onrender.com",
+      "https://www.doctoro-production.onrender.com",
+    ],
+    // 'origin': 'http://localhost:8080',
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: false,
+    preflightContinue: false,
+  })
+);
 
 app.use(express.static(path.join(__dirname, "/client/build")));
 
